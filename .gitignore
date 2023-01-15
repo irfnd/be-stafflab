@@ -1,0 +1,10 @@
+# Node Modules
+node_modules
+
+# Yarn or NPM files
+yarn.lock
+
+# Environment files
+.env
+!.env.example
+.eslintcache

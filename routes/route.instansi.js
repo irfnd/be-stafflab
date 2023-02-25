@@ -1,8 +1,13 @@
 const router = require("express").Router();
 const auth = require("../middlewares/auth");
-const { Instansi } = require("../controllers");
+const { InstansiControllers } = require("../controllers");
 
-router.route("/").get(auth, Instansi.getAllInstansi).post(auth, Instansi.createInstansi);
-router.route("/:id").get(auth, Instansi.getInstansi).patch(auth, Instansi.updateInstansi).delete(auth, Instansi.deleteInstansi);
+router.route("/").get(auth, InstansiControllers.getAllInstansi).post(auth, InstansiControllers.createInstansi);
+
+router
+	.route("/:id")
+	.get(auth, InstansiControllers.getInstansi)
+	.patch(auth, InstansiControllers.updateInstansi)
+	.delete(auth, InstansiControllers.deleteInstansi);
 
 module.exports = router;

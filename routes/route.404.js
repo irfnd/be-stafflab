@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { NotFound } = require("../controllers");
+const { NotFoundControllers } = require("../controllers");
 
-router.use("/", NotFound.allMethods);
+router.use("/", NotFoundControllers.allMethods);
 
 module.exports = router;

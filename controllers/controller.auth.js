@@ -1,7 +1,7 @@
 const { AuthServices } = require("../services");
 const validator = require("../utils/validator");
 const { responseSuccess } = require("../utils/response");
-const { Auth: AuthSchema } = require("../validations");
+const { AuthSchema } = require("../validations");
 
 const login = async (req, res, next) => {
 	try {

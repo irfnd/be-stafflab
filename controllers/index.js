@@ -1,5 +1,5 @@
 module.exports = {
-	Auth: require("./controller.auth"),
-	Instansi: require("./controller.instansi"),
-	NotFound: require("./controller.404"),
+	AuthControllers: require("./controller.auth"),
+	InstansiControllers: require("./controller.instansi"),
+	NotFoundControllers: require("./controller.404"),
 };

@@ -2,7 +2,7 @@ const status = require("http-status");
 const validator = require("../utils/validator");
 const { InstansiServices } = require("../services");
 const { responseSuccess } = require("../utils/response");
-const { Instansi: InstansiSchema } = require("../validations");
+const { InstansiSchema } = require("../validations");
 
 const getAllInstansi = async (req, res, next) => {
 	try {

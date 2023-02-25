@@ -1,4 +1,4 @@
 module.exports = {
-	Auth: require("./validation.auth"),
-	Instansi: require("./validation.instansi"),
+	AuthSchema: require("./validation.auth"),
+	InstansiSchema: require("./validation.instansi"),
 };

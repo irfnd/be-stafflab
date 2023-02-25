@@ -1,7 +1,8 @@
 const router = require("express").Router();
 
 const defaultRoutes = [
-	{ path: "/", route: require("./route.home") },
+	{ path: "/", route: require("./route.auth") },
+	{ path: "/instansi", route: require("./route.instansi") },
 	{ path: "*", route: require("./route.404") },
 ];
 

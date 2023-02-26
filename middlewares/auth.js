@@ -1,4 +1,4 @@
-const status = require("http-status");
+const httpStatus = require("http-status");
 const checkToken = require("../utils/jwt");
 
 const auth = async (req, res, next) => {
@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
 	const token = authHeader && authHeader.split(" ")[1];
 
 	try {
-		if (!token) throw new Error("Akses token wajib diisi!", { cause: { code: status.FORBIDDEN } });
+		if (!token) throw new Error("Akses token wajib diisi!", { cause: { code: httpStatus.FORBIDDEN } });
 		const user = await checkToken(token);
 		req.user = user;
 		next();

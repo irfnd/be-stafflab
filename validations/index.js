@@ -3,4 +3,5 @@ module.exports = {
 	InstansiSchema: require("./validation.instansi"),
 	DivisiSchema: require("./validation.divisi"),
 	JabatanSchema: require("./validation.jabatan"),
+	GolonganSchema: require("./validation.golongan"),
 };

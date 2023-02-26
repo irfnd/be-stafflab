@@ -3,4 +3,5 @@ module.exports = {
 	InstansiServices: require("./service.instansi"),
 	DivisiServices: require("./service.divisi"),
 	JabatanServices: require("./service.jabatan"),
+	GolonganServices: require("./service.golongan"),
 };

@@ -14,7 +14,7 @@ const getAllStatus = async (req, res, next) => {
 const getStatus = async (req, res, next) => {
 	const { id } = req.params;
 	try {
-		if (!id) throw new Error("ID parameter wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const status = await StatusPegawaiServices.getStatus(id);
 		res.json(responseSuccess("GET data berhasil!", status));
 	} catch (err) {

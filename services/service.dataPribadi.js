@@ -1,11 +1,5 @@
 const Supabase = require("../configs/supabase");
 
-const getAllDataPribadi = async () => {
-	const { data, error } = await Supabase.from("data_pribadi").select("*");
-	if (error) throw error;
-	return data;
-};
-
 const getDataPribadi = async (nip) => {
 	const { data, error } = await Supabase.from("data_pribadi").select("*").eq("nipPegawai", nip).single();
 	if (error) throw error;
@@ -29,7 +23,6 @@ const updateDataPribadi = async (newData, nik) => {
 };
 
 module.exports = {
-	getAllDataPribadi,
 	getDataPribadi,
 	createDataPribadi,
 	updateDataPribadi,

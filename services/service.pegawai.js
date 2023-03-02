@@ -1,13 +1,13 @@
 const Supabase = require("../configs/supabase");
 
 const getAllPegawai = async () => {
-	const { data, error } = await Supabase.from("pegawai").select("*");
+	const { data, error } = await Supabase.from("data_pribadi").select("*, pegawai (*)");
 	if (error) throw error;
 	return data;
 };
 
 const getPegawai = async (nip) => {
-	const { data, error } = await Supabase.from("pegawai").select("*").eq("nip", nip).single();
+	const { data, error } = await Supabase.from("data_pribadi").select("*, pegawai (*)").eq("nipPegawai", nip).single();
 	if (error) throw error;
 	return data;
 };

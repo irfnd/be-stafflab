@@ -19,7 +19,7 @@ const getAllFile = async (req, res, next) => {
 const getFile = async (req, res, next) => {
 	const { id } = req.params;
 	try {
-		if (!id) throw new Error("ID parameter wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const file = await DokumenServices.getDokumen(id);
 		res.json(responseSuccess("GET data berhasil!", file));
 	} catch (err) {

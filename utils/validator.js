@@ -1,10 +1,24 @@
 const httpStatus = require("http-status");
 
-module.exports = async (schema, data) => {
+const validator = async (schema, data) => {
 	try {
 		const validated = await schema.validate(data);
 		return validated;
 	} catch (err) {
 		throw new Error(err.message, { cause: { code: httpStatus.BAD_REQUEST } });
 	}
+};
+
+const validatorMulter = (schema) => async (req) => {
+	try {
+		const validated = await schema.validate(req.body);
+		return validated;
+	} catch (err) {
+		throw new Error(err.message, { cause: { code: httpStatus.BAD_REQUEST } });
+	}
+};
+
+module.exports = {
+	validator,
+	validatorMulter,
 };

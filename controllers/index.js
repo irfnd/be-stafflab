@@ -6,5 +6,6 @@ module.exports = {
 	DivisiControllers: require("./controller.divisi"),
 	JabatanControllers: require("./controller.jabatan"),
 	GolonganControllers: require("./controller.golongan"),
+	FileControllers: require("./controller.file"),
 	NotFoundControllers: require("./controller.404"),
 };

@@ -6,4 +6,7 @@ module.exports = {
 	DivisiServices: require("./service.divisi"),
 	JabatanServices: require("./service.jabatan"),
 	GolonganServices: require("./service.golongan"),
+	PegawaiServices: require("./service.pegawai"),
+	FileServices: require("./service.file"),
+	DokumenServices: require("./service.dokumen"),
 };

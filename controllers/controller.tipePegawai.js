@@ -14,7 +14,7 @@ const getAllTipe = async (req, res, next) => {
 const getTipe = async (req, res, next) => {
 	const { id } = req.params;
 	try {
-		if (!id) throw new Error("ID Parameter wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		if (!id) throw new Error("ID parameter wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const tipe = await TipePegawaiServices.getTipe(id);
 		res.json(responseSuccess("GET data berhasil!", tipe));
 	} catch (err) {

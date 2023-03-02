@@ -7,6 +7,12 @@ const config = {
 		url: process.env.SUPABASE_URL,
 		anonKey: process.env.SUPABASE_ANON,
 	},
+	multer: {
+		filterFile: {
+			photo: require("./fileTypes").photo,
+			docs: require("./fileTypes").docs,
+		},
+	},
 };
 
 module.exports = config;

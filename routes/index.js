@@ -8,6 +8,7 @@ const defaultRoutes = [
 	{ path: "/divisi", route: require("./route.divisi") },
 	{ path: "/jabatan", route: require("./route.jabatan") },
 	{ path: "/golongan", route: require("./route.golongan") },
+	{ path: "/file", route: require("./route.file") },
 	{ path: "*", route: require("./route.404") },
 ];
 

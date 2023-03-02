@@ -1,5 +1,5 @@
 const { AuthServices } = require("../services");
-const validator = require("../utils/validator");
+const { validator } = require("../utils/validator");
 const { responseSuccess } = require("../utils/response");
 const { AuthSchema } = require("../validations");
 

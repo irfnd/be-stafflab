@@ -4,6 +4,7 @@
 	"plugins": ["prettier"],
 	"parserOptions": { "ecmaVersion": "latest" },
 	"rules": {
+		"camelcase": "off",
 		"no-unused-vars": "warn",
 		"prettier/prettier": "off"
 	}

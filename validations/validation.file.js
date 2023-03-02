@@ -10,7 +10,7 @@ const getAllFile = yup.object({
 	kategori: yup.mixed().oneOf(kategori, `Kategori yang tersedia (${kategori.filter(Boolean).join(", ")})`),
 });
 
-const postFile = yup.object({
+const uploadFile = yup.object({
 	nipPegawai: yup.string().trim().required("NIP pegawai wajib diisi!"),
 	namaFile: yup.string().trim().required("Nama file wajib diisi!"),
 	kategori: yup
@@ -19,7 +19,12 @@ const postFile = yup.object({
 		.required("Kategori wajib diisi!"),
 });
 
+const updateFile = yup.object({
+	namaFile: yup.string().trim(),
+});
+
 module.exports = {
 	getAllFile,
-	postFile,
+	uploadFile,
+	updateFile,
 };

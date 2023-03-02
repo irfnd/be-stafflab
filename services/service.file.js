@@ -1,17 +1,22 @@
 const Supabase = require("../configs/supabase");
+const { decode } = require("base64-arraybuffer");
 
-const postFile = async (newData) => {
+const uploadFile = async (newData) => {
 	const { folder, kategori, namaFile, file, pegawai } = newData;
-	const filename = `${namaFile} - ${pegawai}.${file.name.match(/[^.]+$/)}`;
-	const { data, error } = await Supabase.storage.from("dokumen").upload(`${folder}/${kategori}/${filename}`, file);
+	const filename = `${namaFile} - ${pegawai}.${file.originalname.match(/[^.]+$/)}`;
+	const { data, error } = await Supabase.storage
+		.from("dokumen")
+		.upload(`${folder}/${kategori}/${filename}`, decode(file.buffer.toString("base64")), { contentType: file.mimetype });
 	if (error) throw error;
-	return data;
+	return { ...data };
 };
 
-const postPhoto = async (newData) => {
+const uploadPhoto = async (newData) => {
 	const { folder, kategori, namaFile, file, pegawai } = newData;
-	const filePath = `${folder}/${kategori}/${namaFile} - ${pegawai}.${file.name.match(/[^.]+$/)}`;
-	const { data, error } = await Supabase.storage.from("foto").upload(filePath, file, { upsert: true });
+	const filePath = `${folder}/${kategori}/${namaFile} - ${pegawai}.${file.originalname.match(/[^.]+$/)}`;
+	const { data, error } = await Supabase.storage
+		.from("foto")
+		.upload(filePath, decode(file.buffer.toString("base64")), { upsert: true, contentType: file.mimetype });
 	const { data: listFoto } = await Supabase.storage.from("foto").list(`${folder}/${kategori}`);
 	if (error) throw error;
 	return { ...data, updated_at: listFoto.filter((el) => data.path.split("/").pop() === el.name)[0].metadata.lastModified };
@@ -38,8 +43,8 @@ const deleteFile = async (selectedData) => {
 };
 
 module.exports = {
-	postFile,
-	postPhoto,
+	uploadFile,
+	uploadPhoto,
 	getPhoto,
 	updateFile,
 	deleteFile,

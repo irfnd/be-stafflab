@@ -10,4 +10,6 @@ module.exports = {
 	DataPribadiServices: require("./service.dataPribadi"),
 	FileServices: require("./service.file"),
 	DokumenServices: require("./service.dokumen"),
+	AkunServices: require("./service.akun"),
+	ClaimsServices: require("./service.claims"),
 };

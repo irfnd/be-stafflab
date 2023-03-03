@@ -18,7 +18,7 @@ const upload = ({ fileTypes }) => {
 					false
 				);
 			},
-		}).single("file")
+		}).single(fileTypes.fieldName)
 	);
 };
 

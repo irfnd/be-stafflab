@@ -6,6 +6,8 @@ const { PegawaiServices, FileServices, DokumenServices } = require("../services"
 const { responseSuccess } = require("../utils/response");
 const { FileSchema } = require("../validations");
 
+const fileValidation = config.multer.filterFile;
+
 const getAllFile = async (req, res, next) => {
 	try {
 		const queries = await validator(FileSchema.getAllFile, req.query);
@@ -29,8 +31,8 @@ const getFile = async (req, res, next) => {
 
 const uploadFile = async (req, res, next) => {
 	try {
-		await upload({ fileTypes: config.multer.filterFile.docs })(req, res);
-		const { nipPegawai, ...validated } = await validatorMulter(FileSchema.uploadFile)(req);
+		await upload({ fileTypes: fileValidation.docs })(req, res);
+		const { nipPegawai, dokumen, ...validated } = await validatorMulter(FileSchema.uploadFile, fileValidation.docs.fieldName)(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const uploadedFile = await FileServices.uploadFile({ ...validated, folder: pegawai.nip, file: req.file, pegawai: pegawai.nama });
 		const file = await DokumenServices.createDokumen({
@@ -49,8 +51,8 @@ const updateFile = async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
-		await upload({ fileTypes: config.multer.filterFile.docs })(req, res);
-		const { namaFile } = await validatorMulter(FileSchema.updateFile)(req);
+		await upload({ fileTypes: fileValidation.docs })(req, res);
+		const { namaFile } = await validatorMulter(FileSchema.updateFile, fileValidation.docs.fieldName)(req);
 		const { nipPegawai, kategori, nama: dokNama, detail } = await DokumenServices.getDokumen(id);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		await FileServices.deleteFile({ path: detail.path, storage: "dokumen" });
@@ -88,8 +90,8 @@ const deleteFile = async (req, res, next) => {
 
 const uploadPhoto = async (req, res, next) => {
 	try {
-		await upload({ fileTypes: config.multer.filterFile.photo })(req, res);
-		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto)(req);
+		await upload({ fileTypes: fileValidation.photo })(req, res);
+		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto, fileValidation.photo.fieldName)(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const getPhoto = await DokumenServices.getAllDokumen({ nipPegawai: pegawai.nip, kategori: "profil" });
 		if (getPhoto.length === 0) {

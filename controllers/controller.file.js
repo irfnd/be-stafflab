@@ -86,10 +86,57 @@ const deleteFile = async (req, res, next) => {
 	}
 };
 
+const uploadPhoto = async (req, res, next) => {
+	try {
+		await upload({ fileTypes: config.multer.filterFile.photo })(req, res);
+		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto)(req);
+		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
+		const getPhoto = await DokumenServices.getAllDokumen({ nipPegawai: pegawai.nip, kategori: "profil" });
+		if (getPhoto.length === 0) {
+			const uploadedPhoto = await FileServices.uploadPhoto({
+				folder: pegawai.nip,
+				kategori: "profil",
+				namaFile: "Foto Profil",
+				file: req.file,
+				pegawai: pegawai.nama,
+			});
+			const { publicUrl } = FileServices.getPhoto(uploadedPhoto.path);
+			const photo = await DokumenServices.createDokumen({
+				nama: `Foto Profil - ${pegawai.nama}`,
+				detail: { ...uploadedPhoto, publicUrl },
+				kategori: "profil",
+				nipPegawai: pegawai.nip,
+			});
+			res.json(responseSuccess("POST foto berhasil!", photo));
+		} else {
+			await FileServices.deleteFile({ path: getPhoto[0].detail.path, storage: "foto" });
+			const uploadedPhoto = await FileServices.uploadPhoto({
+				folder: pegawai.nip,
+				kategori: "profil",
+				namaFile: "Foto Profil",
+				file: req.file,
+				pegawai: pegawai.nama,
+			});
+			const { publicUrl } = FileServices.getPhoto(uploadedPhoto.path);
+			const photo = await DokumenServices.updateDokumen(
+				{
+					nama: `Foto Profil - ${pegawai.nama}`,
+					detail: { ...uploadedPhoto, publicUrl: `${publicUrl}?t=${uploadedPhoto.updated_at}` },
+				},
+				getPhoto[0].id
+			);
+			res.json(responseSuccess("POST foto berhasil!", photo));
+		}
+	} catch (err) {
+		next(err);
+	}
+};
+
 module.exports = {
 	getAllFile,
 	getFile,
 	uploadFile,
 	updateFile,
 	deleteFile,
+	uploadPhoto,
 };

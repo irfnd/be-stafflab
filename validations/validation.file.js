@@ -23,8 +23,13 @@ const updateFile = yup.object({
 	namaFile: yup.string().trim(),
 });
 
+const uploadPhoto = yup.object({
+	nipPegawai: yup.string().trim().required("NIP pegawai wajib diisi!"),
+});
+
 module.exports = {
 	getAllFile,
 	uploadFile,
 	updateFile,
+	uploadPhoto,
 };

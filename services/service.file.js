@@ -23,8 +23,8 @@ const uploadPhoto = async (newData) => {
 };
 
 const getPhoto = (path) => {
-	const { data: getPublicUrl } = Supabase.storage.from("foto").getPublicUrl(path);
-	return getPublicUrl;
+	const { data } = Supabase.storage.from("foto").getPublicUrl(path);
+	return data;
 };
 
 const updateFile = async (newData) => {

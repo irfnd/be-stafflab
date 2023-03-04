@@ -45,11 +45,15 @@ const deletePegawai = async (nip) => {
 	const listDokumen = allFile.filter((el) => el.kategori !== "profil").map((el) => el.path);
 	const listFoto = allFile.filter((el) => el.kategori === "profil").map((el) => el.path);
 
-	const { error: dokumenErr } = await Supabase.storage.from("dokumen").remove(listDokumen);
-	if (dokumenErr) throw dokumenErr;
+	if (listDokumen.length > 0) {
+		const { error: dokumenErr } = await Supabase.storage.from("dokumen").remove(listDokumen);
+		if (dokumenErr) throw dokumenErr;
+	}
 
-	const { error: fotoErr } = await Supabase.storage.from("foto").remove(listFoto);
-	if (fotoErr) throw fotoErr;
+	if (listFoto.length > 0) {
+		const { error: fotoErr } = await Supabase.storage.from("foto").remove(listFoto);
+		if (fotoErr) throw fotoErr;
+	}
 
 	const { data, error: pegawaiErr } = await Supabase.from("pegawai").delete().eq("nip", nip).select().single();
 	if (pegawaiErr) throw pegawaiErr;

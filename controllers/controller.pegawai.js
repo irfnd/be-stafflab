@@ -16,7 +16,7 @@ const {
 	DokumenServices,
 } = require("../services");
 const { PegawaiSchema } = require("../validations");
-const { validatorMulter } = require("../utils/validator");
+const { validatorMulter, validator } = require("../utils/validator");
 const { responseSuccess } = require("../utils/response");
 const { pegawaiFormatter } = require("../utils/formatter");
 
@@ -84,8 +84,55 @@ const createPegawai = async (req, res, next) => {
 	}
 };
 
+const updatePegawai = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
+	const { nip } = req.params;
+	try {
+		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (!nip) throw new Error("Parameter NIP wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { nama, email, noTelepon, ...validated } = await validator(PegawaiSchema.updatePegawai, req.body);
+		const getPegawai = await PegawaiServices.getPegawai(nip);
+		let pegawai = pegawaiFormatter(getPegawai);
+		console.log(pegawai);
+		if (nama) {
+			const newPegawai = { nama, email: email || pegawai.email, noTelepon: noTelepon ? `+62${noTelepon}` : pegawai.noTelepon };
+			await PegawaiServices.updatePegawai(newPegawai, pegawai.nip);
+			pegawai = { ...pegawai, ...newPegawai };
+		}
+		if (email || noTelepon) {
+			const newKontak = { email: email || pegawai.email, phone: noTelepon ? `+62${noTelepon}` : pegawai.noTelepon };
+			await AkunServices.updateUser(newKontak, pegawai.uuidUser);
+			pegawai = { ...pegawai, email: newKontak.email, noTelepon: newKontak.phone };
+		}
+		const { nipPegawai, createdAt, ...dataPribadi } = await DataPribadiServices.updateDataPribadi(
+			{ ...pegawai, ...validated },
+			pegawai.nik
+		);
+		res.json(responseSuccess("UPDATE Pegawai berhasil!", { ...pegawai, ...dataPribadi }));
+	} catch (err) {
+		next(err);
+	}
+};
+
+const deletePegawai = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
+	const { nip } = req.params;
+	try {
+		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (!nip) throw new Error("Parameter NIP wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { pegawai: getPegawai } = await PegawaiServices.getPegawai(nip);
+		const pegawai = await PegawaiServices.deletePegawai(getPegawai.nip);
+		await AkunServices.deleteUser(getPegawai.uuidUser);
+		res.json(responseSuccess("DELETE Pegawai berhasil!", pegawai));
+	} catch (err) {
+		next(err);
+	}
+};
+
 module.exports = {
 	getAllPegawai,
 	getPegawai,
 	createPegawai,
+	updatePegawai,
+	deletePegawai,
 };

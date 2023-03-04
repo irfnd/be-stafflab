@@ -3,6 +3,10 @@ const auth = require("../middlewares/auth");
 const { PegawaiControllers } = require("../controllers");
 
 router.route("/").get(auth, PegawaiControllers.getAllPegawai).post(auth, PegawaiControllers.createPegawai);
-router.route("/:nip").get(auth, PegawaiControllers.getPegawai);
+router
+	.route("/:nip")
+	.get(auth, PegawaiControllers.getPegawai)
+	.patch(auth, PegawaiControllers.updatePegawai)
+	.delete(auth, PegawaiControllers.deletePegawai);
 
 module.exports = router;

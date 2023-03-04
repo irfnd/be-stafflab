@@ -17,7 +17,12 @@ const createDataPribadi = async (newData) => {
 };
 
 const updateDataPribadi = async (newData, nik) => {
-	const { data, error } = await Supabase.from("data_pribadi").update(newData).eq("nik", nik).select().single();
+	const { tempatLahir, tanggalLahir, jenisKelamin, agama, kawin, alamat } = newData;
+	const { data, error } = await Supabase.from("data_pribadi")
+		.update({ tempatLahir, tanggalLahir, jenisKelamin, agama, kawin, alamat })
+		.eq("nik", nik)
+		.select()
+		.single();
 	if (error) throw error;
 	return data;
 };

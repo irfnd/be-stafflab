@@ -25,9 +25,9 @@ const fileValidation = config.multer.filterFile;
 const getAllPegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	try {
-		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		const pegawai = await PegawaiServices.getAllPegawai();
-		res.json(responseSuccess("GET data berhasil!", pegawaiFormatter(pegawai)));
+		res.json(responseSuccess("GET pegawai berhasil!", pegawaiFormatter(pegawai)));
 	} catch (err) {
 		next(err);
 	}
@@ -37,10 +37,10 @@ const getPegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	const { nip } = req.params;
 	try {
-		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!nip) throw new Error("Parameter NIP wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const pegawai = await PegawaiServices.getPegawai(nip);
-		res.json(responseSuccess("GET data berhasil!", pegawaiFormatter(pegawai)));
+		res.json(responseSuccess("GET pegawai berhasil!", pegawaiFormatter(pegawai)));
 	} catch (err) {
 		next(err);
 	}
@@ -49,7 +49,7 @@ const getPegawai = async (req, res, next) => {
 const createPegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	try {
-		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		await upload({ fileTypes: fileValidation.photo })(req, res);
 		const { foto, ...validated } = await validatorMulter(PegawaiSchema.createPegawai, fileValidation.photo.fieldName)(req);
 		await StatusPegawaiServices.getStatus(validated.status);
@@ -78,7 +78,7 @@ const createPegawai = async (req, res, next) => {
 			kategori: "profil",
 			nipPegawai: pegawai.nip,
 		});
-		res.json(responseSuccess("POST Pegawai berhasil!", { ...validated, photo }));
+		res.json(responseSuccess("POST pegawai berhasil!", { ...validated, photo }));
 	} catch (err) {
 		next(err);
 	}
@@ -88,7 +88,7 @@ const updatePegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	const { nip } = req.params;
 	try {
-		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!nip) throw new Error("Parameter NIP wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const { nama, email, noTelepon, ...validated } = await validator(PegawaiSchema.updatePegawai, req.body);
 		const getPegawai = await PegawaiServices.getPegawai(nip);
@@ -108,7 +108,7 @@ const updatePegawai = async (req, res, next) => {
 			{ ...pegawai, ...validated },
 			pegawai.nik
 		);
-		res.json(responseSuccess("UPDATE Pegawai berhasil!", { ...pegawai, ...dataPribadi }));
+		res.json(responseSuccess("UPDATE pegawai berhasil!", { ...pegawai, ...dataPribadi }));
 	} catch (err) {
 		next(err);
 	}
@@ -118,12 +118,12 @@ const deletePegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	const { nip } = req.params;
 	try {
-		if (user?.claims === "MANAJER") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!nip) throw new Error("Parameter NIP wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const { pegawai: getPegawai } = await PegawaiServices.getPegawai(nip);
 		const pegawai = await PegawaiServices.deletePegawai(getPegawai.nip);
 		await AkunServices.deleteUser(getPegawai.uuidUser);
-		res.json(responseSuccess("DELETE Pegawai berhasil!", pegawai));
+		res.json(responseSuccess("DELETE pegawai berhasil!", pegawai));
 	} catch (err) {
 		next(err);
 	}

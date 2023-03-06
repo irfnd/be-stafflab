@@ -1,5 +1,6 @@
 module.exports = {
 	AuthControllers: require("./controller.auth"),
+	ResetPasswordControllers: require("./controller.resetPassword"),
 	TipePegawaiControllers: require("./controller.tipePegawai"),
 	StatusPegawaiControllers: require("./controller.statusPegawai"),
 	InstansiControllers: require("./controller.instansi"),

@@ -48,7 +48,25 @@ const updatePegawai = yup.object({
 	alamat: yup.string().trim().max(200, "Alamat harus berisi kurang dari 200 karakter!"),
 });
 
+const resetPasswordPegawai = yup.object({
+	password: yup
+		.string()
+		.trim()
+		.required("Password wajib diisi!")
+		.min(8, "Password harus berisi minimal 8 karakter!")
+		.minLowercase(1, "Password harus berisi minimal 1 huruf kecil!")
+		.minUppercase(1, "Password harus berisi minimal 1 huruf kapital!")
+		.minNumbers(1, "Password harus berisi minimal 1 nomor!")
+		.minSymbols(1, "Password harus berisi minimal 1 simbol!"),
+	konfirmasiPassword: yup
+		.string()
+		.trim()
+		.required("Konfirmasi password wajib diisi!")
+		.oneOf([yup.ref("password"), null], "Konfirmasi password tidak cocok!"),
+});
+
 module.exports = {
 	createPegawai,
 	updatePegawai,
+	resetPasswordPegawai,
 };

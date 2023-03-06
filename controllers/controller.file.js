@@ -77,8 +77,10 @@ const updateFile = async (req, res, next) => {
 };
 
 const deleteFile = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
 	const { id } = req.params;
 	try {
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		const file = await DokumenServices.deleteDokumen(id);
 		await FileServices.deleteFile({ path: file.detail.path, storage: "dokumen" });
@@ -89,7 +91,9 @@ const deleteFile = async (req, res, next) => {
 };
 
 const uploadPhoto = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
 	try {
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		await upload({ fileTypes: fileValidation.photo })(req, res);
 		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto, fileValidation.photo.fieldName)(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);

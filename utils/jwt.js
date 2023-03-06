@@ -10,7 +10,8 @@ module.exports = async (token) => {
 		throw new Error("Token kedaluwarsa, harap login ulang!", { cause: { code: httpStatus.UNAUTHORIZED } });
 	}
 
-	const session = await AuthServices.getSession();
-	if (["ADMIN", "MANAJER"].includes(session.user.app_metadata?.claims)) return session.user;
-	throw new Error("Hanya ADMIN dan MANAJER yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+	const { user } = await AuthServices.getSession();
+	if (["ADMIN", "MANAJER"].includes(user.app_metadata.claims)) return user;
+	user.app_metadata.claims = "PEGAWAI";
+	return user;
 };

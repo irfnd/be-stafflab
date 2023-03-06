@@ -1,12 +1,12 @@
 const httpStatus = require("http-status");
 const config = require("../configs");
-const upload = require("../middlewares/multer");
+const { upload } = require("../middlewares/multer");
 const { validator, validatorMulter } = require("../utils/validator");
 const { PegawaiServices, FileServices, DokumenServices } = require("../services");
 const { responseSuccess } = require("../utils/response");
 const { FileSchema } = require("../validations");
 
-const fileValidation = config.multer.filterFile;
+const { docs, photo } = config.multer.filterFile;
 
 const getAllFile = async (req, res, next) => {
 	try {
@@ -31,8 +31,8 @@ const getFile = async (req, res, next) => {
 
 const uploadFile = async (req, res, next) => {
 	try {
-		await upload({ fileTypes: fileValidation.docs })(req, res);
-		const { nipPegawai, dokumen, ...validated } = await validatorMulter(FileSchema.uploadFile, fileValidation.docs.fieldName)(req);
+		await upload({ fileTypes: docs })(req, res);
+		const { nipPegawai, dokumen, ...validated } = await validatorMulter(FileSchema.uploadFile)(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const uploadedFile = await FileServices.uploadFile({ ...validated, folder: pegawai.nip, file: req.file, pegawai: pegawai.nama });
 		const file = await DokumenServices.createDokumen({
@@ -51,8 +51,8 @@ const updateFile = async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
-		await upload({ fileTypes: fileValidation.docs })(req, res);
-		const { namaFile } = await validatorMulter(FileSchema.updateFile, fileValidation.docs.fieldName)(req);
+		await upload({ fileTypes: docs })(req, res);
+		const { namaFile } = await validatorMulter(FileSchema.updateFile)(req);
 		const { nipPegawai, kategori, nama: dokNama, detail } = await DokumenServices.getDokumen(id);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		await FileServices.deleteFile({ path: detail.path, storage: "dokumen" });
@@ -94,8 +94,8 @@ const uploadPhoto = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
-		await upload({ fileTypes: fileValidation.photo })(req, res);
-		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto, fileValidation.photo.fieldName)(req);
+		await upload({ fileTypes: photo })(req, res);
+		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto)(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const getPhoto = await DokumenServices.getAllDokumen({ nipPegawai: pegawai.nip, kategori: "profil" });
 		if (getPhoto.length === 0) {

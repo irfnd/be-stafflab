@@ -10,14 +10,15 @@ const validator = async (schema, data) => {
 };
 
 const validatorMulter =
-	(schema, fileType = null) =>
+	(schema, multiple = false) =>
 	async (req) => {
 		try {
-			if (fileType) {
-				const validated = await schema.validate({ ...req.body, [fileType]: req.file });
+			if (multiple) {
+				const files = Object.keys(req.files).reduce((acc, key) => ({ ...acc, [key]: req.files[key][0] }), {});
+				const validated = await schema.validate({ ...req.body, ...files });
 				return validated;
 			} else {
-				const validated = await schema.validate(req.body);
+				const validated = await schema.validate({ ...req.body, [req.file.fieldname]: req.file });
 				return validated;
 			}
 		} catch (err) {

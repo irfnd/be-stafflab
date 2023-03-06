@@ -1,6 +1,6 @@
 const httpStatus = require("http-status");
 const config = require("../configs");
-const upload = require("../middlewares/multer");
+const { upload } = require("../middlewares/multer");
 const {
 	AkunServices,
 	ClaimsServices,
@@ -20,7 +20,7 @@ const { validatorMulter, validator } = require("../utils/validator");
 const { responseSuccess } = require("../utils/response");
 const { pegawaiFormatter } = require("../utils/formatter");
 
-const fileValidation = config.multer.filterFile;
+const { photo } = config.multer.filterFile;
 
 const getAllPegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
@@ -50,8 +50,8 @@ const createPegawai = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
-		await upload({ fileTypes: fileValidation.photo })(req, res);
-		const { foto, ...validated } = await validatorMulter(PegawaiSchema.createPegawai, fileValidation.photo.fieldName)(req);
+		await upload({ fileTypes: photo })(req, res);
+		const { foto, ...validated } = await validatorMulter(PegawaiSchema.createPegawai)(req);
 		await StatusPegawaiServices.getStatus(validated.status);
 		await TipePegawaiServices.getTipe(validated.tipe);
 		await InstansiServices.getInstansi(validated.instansi);
@@ -72,13 +72,13 @@ const createPegawai = async (req, res, next) => {
 			pegawai: pegawai.nama,
 		});
 		const { publicUrl } = FileServices.getPhoto(uploadedPhoto.path);
-		const photo = await DokumenServices.createDokumen({
+		const postFoto = await DokumenServices.createDokumen({
 			nama: `Foto Profil - ${pegawai.nama}`,
 			detail: { ...uploadedPhoto, publicUrl },
 			kategori: "profil",
 			nipPegawai: pegawai.nip,
 		});
-		res.json(responseSuccess("POST pegawai berhasil!", { ...validated, photo }));
+		res.json(responseSuccess("POST pegawai berhasil!", { ...validated, photo: postFoto }));
 	} catch (err) {
 		next(err);
 	}
@@ -93,7 +93,6 @@ const updatePegawai = async (req, res, next) => {
 		const { nama, email, noTelepon, ...validated } = await validator(PegawaiSchema.updatePegawai, req.body);
 		const getPegawai = await PegawaiServices.getPegawai(nip);
 		let pegawai = pegawaiFormatter(getPegawai);
-		console.log(pegawai);
 		if (nama) {
 			const newPegawai = { nama, email: email || pegawai.email, noTelepon: noTelepon ? `+62${noTelepon}` : pegawai.noTelepon };
 			await PegawaiServices.updatePegawai(newPegawai, pegawai.nip);

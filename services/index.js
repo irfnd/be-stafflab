@@ -8,8 +8,9 @@ module.exports = {
 	GolonganServices: require("./service.golongan"),
 	PegawaiServices: require("./service.pegawai"),
 	DataPribadiServices: require("./service.dataPribadi"),
-	FileServices: require("./service.file"),
+	PendidikanServices: require("./service.pendidikan"),
 	DokumenServices: require("./service.dokumen"),
+	FileServices: require("./service.file"),
 	AkunServices: require("./service.akun"),
 	ClaimsServices: require("./service.claims"),
 };

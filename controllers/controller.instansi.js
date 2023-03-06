@@ -6,7 +6,6 @@ const { InstansiSchema } = require("../validations");
 
 const getAllInstansi = async (req, res, next) => {
 	try {
-		console.log(req.user);
 		const instansi = await InstansiServices.getAllInstansi();
 		res.json(responseSuccess("GET instansi berhasil!", instansi));
 	} catch (err) {

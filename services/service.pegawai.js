@@ -12,6 +12,16 @@ const getPegawai = async (nip) => {
 	return data;
 };
 
+const getPegawaiByUid = async (uid) => {
+	const { data: nip, error: getNipErr } = await Supabase.from("pegawai").select("nip").eq("uuidUser", uid).single();
+	if (getNipErr) throw getNipErr;
+
+	const { data: pegawai, error: pegawaiErr } = await Supabase.from("data_pribadi").select("*, pegawai (*)").eq("nipPegawai", nip).single();
+	if (pegawaiErr) throw pegawaiErr;
+
+	return pegawai;
+};
+
 const createPegawai = async (newData) => {
 	const {
 		nip,
@@ -64,6 +74,7 @@ const deletePegawai = async (nip) => {
 module.exports = {
 	getAllPegawai,
 	getPegawai,
+	getPegawaiByUid,
 	createPegawai,
 	updatePegawai,
 	deletePegawai,

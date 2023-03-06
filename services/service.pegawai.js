@@ -13,7 +13,10 @@ const getPegawai = async (nip) => {
 };
 
 const getPegawaiByUid = async (uid) => {
-	const { data: nip, error: getNipErr } = await Supabase.from("pegawai").select("nip").eq("uuidUser", uid).single();
+	const {
+		data: { nip },
+		error: getNipErr,
+	} = await Supabase.from("pegawai").select("nip").eq("uuidUser", uid).single();
 	if (getNipErr) throw getNipErr;
 
 	const { data: pegawai, error: pegawaiErr } = await Supabase.from("data_pribadi").select("*, pegawai (*)").eq("nipPegawai", nip).single();

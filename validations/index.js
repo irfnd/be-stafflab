@@ -1,10 +1,10 @@
 module.exports = {
 	AuthSchema: require("./validation.auth"),
-	InstansiSchema: require("./validation.instansi"),
 	DivisiSchema: require("./validation.divisi"),
-	JabatanSchema: require("./validation.jabatan"),
+	FileSchema: require("./validation.file"),
 	GolonganSchema: require("./validation.golongan"),
+	InstansiSchema: require("./validation.instansi"),
+	JabatanSchema: require("./validation.jabatan"),
 	PegawaiSchema: require("./validation.pegawai"),
 	PendidikanSchema: require("./validation.pendidikan"),
-	FileSchema: require("./validation.file"),
 };

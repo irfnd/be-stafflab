@@ -11,6 +11,7 @@ const defaultRoutes = [
 	{ path: "/pegawai", route: require("./route.pegawai") },
 	{ path: "/pendidikan", route: require("./route.pendidikan") },
 	{ path: "/file", route: require("./route.file") },
+	{ path: "/profil", route: require("./route.profil") },
 	{ path: "*", route: require("./route.404") },
 ];
 

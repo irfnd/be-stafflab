@@ -1,5 +1,6 @@
 module.exports = {
 	AuthControllers: require("./controller.auth"),
+	CutiControllers: require("./controller.cuti"),
 	DivisiControllers: require("./controller.divisi"),
 	FileControllers: require("./controller.file"),
 	GolonganControllers: require("./controller.golongan"),

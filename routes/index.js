@@ -11,12 +11,13 @@ const routes = [
 	{ path: "/pegawai", route: require("./route.pegawai") },
 	{ path: "/pendidikan", route: require("./route.pendidikan") },
 	{ path: "/mutasi", route: require("./route.mutasi") },
+	{ path: "/cuti", route: require("./route.cuti") },
 	{ path: "/file", route: require("./route.file") },
 	{ path: "/profil", route: require("./route.profil") },
 	{ path: "*", route: require("./route.404") },
 ];
 
-routes?.forEach((route) => {
+routes.forEach((route) => {
 	router.use(route.path, route.route);
 });
 

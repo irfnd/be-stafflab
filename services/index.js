@@ -2,6 +2,7 @@ module.exports = {
 	AkunServices: require("./service.akun"),
 	AuthServices: require("./service.auth"),
 	ClaimsServices: require("./service.claims"),
+	CutiServices: require("./service.cuti"),
 	DataPribadiServices: require("./service.dataPribadi"),
 	DivisiServices: require("./service.divisi"),
 	DokumenServices: require("./service.dokumen"),

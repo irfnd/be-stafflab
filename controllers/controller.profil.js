@@ -4,8 +4,7 @@ const { responseSuccess } = require("../utils/response");
 const { pegawaiFormatter } = require("../utils/formatter");
 
 const getProfil = async (req, res, next) => {
-	const { app_metadata: user } = req.user;
-	const { id: uid } = req.user;
+	const { app_metadata: user, id: uid } = req.user;
 	try {
 		if (user.claims === "ADMIN")
 			throw new Error("Hanya PEGAWAI dan MANAJER yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });

@@ -7,12 +7,12 @@ yupPassword(yup);
 const { kategoriDokumen: kategori } = config.inputProps;
 
 const getAllFile = yup.object({
-	nipPegawai: yup.string().trim(),
+	nipPegawai: yup.number(),
 	kategori: yup.mixed().oneOf(kategori, `Pilih kategori yang tertera! (${kategori.filter(Boolean).join(", ")})`),
 });
 
 const uploadFile = yup.object({
-	nipPegawai: yup.string().trim().required("NIP pegawai wajib diisi!"),
+	nipPegawai: yup.number().required("NIP wajib diisi!").typeError("NIP wajib diisi!"),
 	namaFile: yup.string().trim().required("Nama file wajib diisi!"),
 	kategori: yup
 		.mixed()
@@ -27,7 +27,7 @@ const updateFile = yup.object({
 });
 
 const uploadPhoto = yup.object({
-	nipPegawai: yup.string().trim().required("NIP pegawai wajib diisi!"),
+	nipPegawai: yup.number().required("NIP wajib diisi!").typeError("NIP wajib diisi!"),
 	foto: yup.mixed().required("Foto wajib diisi!"),
 });
 

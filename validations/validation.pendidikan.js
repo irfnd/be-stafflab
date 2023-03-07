@@ -9,7 +9,7 @@ const { jenjangPendidikan } = config.inputProps;
 const getAllPendidikan = yup.object({ nipPegawai: yup.number() });
 
 const createPendidikan = yup.object({
-	nipPegawai: yup.number().required("NIP pegawai wajib diisi!"),
+	nipPegawai: yup.number().required("NIP wajib diisi!").typeError("NIP wajib diisi!"),
 	nama: yup
 		.string()
 		.trim()

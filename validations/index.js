@@ -1,5 +1,6 @@
 module.exports = {
 	AuthSchema: require("./validation.auth"),
+	CutiSchema: require("./validation.cuti"),
 	DivisiSchema: require("./validation.divisi"),
 	FileSchema: require("./validation.file"),
 	GolonganSchema: require("./validation.golongan"),

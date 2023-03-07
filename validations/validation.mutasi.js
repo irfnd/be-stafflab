@@ -50,7 +50,10 @@ const createMutasi = yup.object({
 	tanggalMutasi: yup.string().trim().required("Tanggal mutasi wajib diisi!"),
 });
 
+const updateMutasi = yup.object({ dokumen: yup.mixed().required("Dokumen wajib diisi!") });
+
 module.exports = {
 	getAllMutasi,
 	createMutasi,
+	updateMutasi,
 };

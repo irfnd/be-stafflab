@@ -69,8 +69,57 @@ const createMutasi = async (req, res, next) => {
 	}
 };
 
+const updateMutasi = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
+	const { id } = req.params;
+	try {
+		if (user.claims !== "MANAJER") throw new Error("Hanya MANAJER yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		await upload({ fileTypes: docs })(req, res);
+		await validatorMulter({ schema: MutasiSchema.updateMutasi })(req);
+		const { id: mutasiId, nipPegawai, dokumen, jenisMutasi, detail } = await MutasiServices.getMutasi(id);
+		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
+		await FileServices.deleteFile({ path: dokumen.files[0].path, storage: "dokumen" });
+		const uploadedMutasi = await FileServices.uploadFile({
+			folder: pegawai.nip,
+			kategori: "mutasi",
+			namaFile: `SK Mutasi ${capitalize.words(jenisMutasi)}`,
+			file: req.file,
+			pegawai: pegawai.nama,
+		});
+		const dokMutasi = await DokumenServices.updateDokumen(
+			{ nama: `SK Mutasi ${capitalize.words(`${jenisMutasi} - ${pegawai.nama}`)}`, detail: uploadedMutasi },
+			dokumen.files[0].id
+		);
+		const mutasi = await MutasiServices.updateMutasi(
+			{ diterima: true, dokumen: { files: [{ id: dokMutasi.id, path: dokMutasi.detail.path }] } },
+			mutasiId
+		);
+
+		if (jenisMutasi === "golongan") {
+			await PegawaiServices.updatePegawai({ idGolongan: detail.golongan.to }, pegawai.nip);
+		}
+		if (jenisMutasi === "pengangkatan") {
+			await PegawaiServices.updatePegawai({ idTipe: detail.tipe.to }, pegawai.nip);
+		}
+		if (jenisMutasi === "phk" || jenisMutasi === "pensiun") {
+			await PegawaiServices.updatePegawai({ idStatus: detail.status.to }, pegawai.nip);
+		}
+		if (jenisMutasi === "instansi" || jenisMutasi === "divisi" || jenisMutasi === "jabatan") {
+			await PegawaiServices.updatePegawai(
+				{ idInstansi: detail.instansi.to, idDivisi: detail.divisi.to, idJabatan: detail.jabatan.to },
+				pegawai.nip
+			);
+		}
+		res.json(responseSuccess("UPDATE mutasi berhasil!", mutasi));
+	} catch (err) {
+		next(err);
+	}
+};
+
 module.exports = {
 	getAllMutasi,
 	getMutasi,
 	createMutasi,
+	updateMutasi,
 };

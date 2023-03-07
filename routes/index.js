@@ -10,6 +10,7 @@ const defaultRoutes = [
 	{ path: "/golongan", route: require("./route.golongan") },
 	{ path: "/pegawai", route: require("./route.pegawai") },
 	{ path: "/pendidikan", route: require("./route.pendidikan") },
+	{ path: "/mutasi", route: require("./route.mutasi") },
 	{ path: "/file", route: require("./route.file") },
 	{ path: "/profil", route: require("./route.profil") },
 	{ path: "*", route: require("./route.404") },

@@ -32,7 +32,7 @@ const getFile = async (req, res, next) => {
 const uploadFile = async (req, res, next) => {
 	try {
 		await upload({ fileTypes: docs })(req, res);
-		const { nipPegawai, dokumen, ...validated } = await validatorMulter(FileSchema.uploadFile)(req);
+		const { nipPegawai, dokumen, ...validated } = await validatorMulter({ schema: FileSchema.uploadFile })(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const uploadedFile = await FileServices.uploadFile({ ...validated, folder: pegawai.nip, file: req.file, pegawai: pegawai.nama });
 		const file = await DokumenServices.createDokumen({
@@ -52,7 +52,7 @@ const updateFile = async (req, res, next) => {
 	try {
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
 		await upload({ fileTypes: docs })(req, res);
-		const { namaFile } = await validatorMulter(FileSchema.updateFile)(req);
+		const { namaFile } = await validatorMulter({ schema: FileSchema.updateFile })(req);
 		const { nipPegawai, kategori, nama: dokNama, detail } = await DokumenServices.getDokumen(id);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		await FileServices.deleteFile({ path: detail.path, storage: "dokumen" });
@@ -95,7 +95,7 @@ const uploadPhoto = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		await upload({ fileTypes: photo })(req, res);
-		const { nipPegawai } = await validatorMulter(FileSchema.uploadPhoto)(req);
+		const { nipPegawai } = await validatorMulter({ schema: FileSchema.uploadPhoto })(req);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
 		const getPhoto = await DokumenServices.getAllDokumen({ nipPegawai: pegawai.nip, kategori: "profil" });
 		if (getPhoto.length === 0) {

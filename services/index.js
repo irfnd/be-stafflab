@@ -9,6 +9,7 @@ module.exports = {
 	GolonganServices: require("./service.golongan"),
 	InstansiServices: require("./service.instansi"),
 	JabatanServices: require("./service.jabatan"),
+	MutasiServices: require("./service.mutasi"),
 	PegawaiServices: require("./service.pegawai"),
 	PendidikanServices: require("./service.pendidikan"),
 	StatusPegawaiServices: require("./service.statusPegawai"),

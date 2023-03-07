@@ -10,7 +10,7 @@ const validator = async (schema, data) => {
 };
 
 const validatorMulter =
-	(schema, multiple = false) =>
+	({ schema, multiple = false, array = false }) =>
 	async (req) => {
 		try {
 			if (multiple) {
@@ -18,8 +18,13 @@ const validatorMulter =
 				const validated = await schema.validate({ ...req.body, ...files });
 				return validated;
 			} else {
-				const validated = await schema.validate({ ...req.body, [req.file.fieldname]: req.file });
-				return validated;
+				if (array) {
+					const validated = await schema.validate({ ...req.body, [req.files[0].fieldname]: req.files });
+					return validated;
+				} else {
+					const validated = await schema.validate({ ...req.body, [req.file.fieldname]: req.file });
+					return validated;
+				}
 			}
 		} catch (err) {
 			throw new Error(err.message, { cause: { code: httpStatus.BAD_REQUEST } });

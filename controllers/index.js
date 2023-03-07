@@ -5,6 +5,7 @@ module.exports = {
 	GolonganControllers: require("./controller.golongan"),
 	InstansiControllers: require("./controller.instansi"),
 	JabatanControllers: require("./controller.jabatan"),
+	MutasiControllers: require("./controller.mutasi"),
 	NotFoundControllers: require("./controller.404"),
 	PegawaiControllers: require("./controller.pegawai"),
 	PendidikanControllers: require("./controller.pendidikan"),

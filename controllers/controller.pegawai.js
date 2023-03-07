@@ -51,7 +51,7 @@ const createPegawai = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		await upload({ fileTypes: photo })(req, res);
-		const { foto, ...validated } = await validatorMulter(PegawaiSchema.createPegawai)(req);
+		const { foto, ...validated } = await validatorMulter({ schema: PegawaiSchema.createPegawai })(req);
 		await StatusPegawaiServices.getStatus(validated.status);
 		await TipePegawaiServices.getTipe(validated.tipe);
 		await InstansiServices.getInstansi(validated.instansi);

@@ -42,8 +42,9 @@ const updateInstansi = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { id: instansiId, createdAt, ...getInstansi } = await InstansiServices.getInstansi(id);
 		const validated = await validator(InstansiSchema.updateInstansi, req.body);
-		const instansi = await InstansiServices.updateInstansi(validated, id);
+		const instansi = await InstansiServices.updateInstansi({ ...getInstansi, ...validated }, instansiId);
 		res.json(responseSuccess("PATCH instansi berhasil!", instansi));
 	} catch (err) {
 		next(err);

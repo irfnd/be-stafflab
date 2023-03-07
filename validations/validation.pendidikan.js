@@ -6,10 +6,10 @@ yupPassword(yup);
 
 const { jenjangPendidikan } = config.inputProps;
 
-const getAllPendidikan = yup.object({ nipPegawai: yup.string().trim() });
+const getAllPendidikan = yup.object({ nipPegawai: yup.number() });
 
 const createPendidikan = yup.object({
-	nipPegawai: yup.string().trim().required("NIP pegawai wajib diisi!"),
+	nipPegawai: yup.number().required("NIP pegawai wajib diisi!"),
 	nama: yup
 		.string()
 		.trim()

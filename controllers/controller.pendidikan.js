@@ -26,7 +26,7 @@ const createPendidikan = async (req, res, next) => {
 	const { app_metadata: user } = req.user;
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
-		await uploadMultiple({ fileTypes: docs, fieldName: fieldsUpload })(req, res);
+		await uploadMultiple({ fileTypes: docs, fields: fieldsUpload })(req, res);
 		const { ijazah, transkrip, ...validated } = await validatorMulter({ schema: PendidikanSchema.createPendidikan, multiple: true })(req);
 		const { pegawai } = await PegawaiServices.getPegawai(validated.nipPegawai);
 		const uploadedIjazah = await FileServices.uploadFile({
@@ -71,7 +71,7 @@ const updatePendidikan = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
-		await uploadMultiple({ fileTypes: docs, fieldName: fieldsUpload })(req, res);
+		await uploadMultiple({ fileTypes: docs, fields: fieldsUpload })(req, res);
 		const { ijazah, transkrip, ...validated } = await validatorMulter({ schema: PendidikanSchema.updatePendidikan, multiple: true })(req);
 		const { dokumen, nipPegawai, jenjang } = await PendidikanServices.getPendidikan(id);
 		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);

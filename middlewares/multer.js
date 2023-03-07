@@ -15,7 +15,7 @@ const upload = ({ fileTypes, isArray = false }) => {
 				fileFilter: (req, file, cb) => {
 					if (mimetypes.includes(file.mimetype)) return cb(null, true);
 					return cb(
-						new Error(`Hanya file dengan ekstensi ${extensions} yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
+						new Error(`Hanya file dengan ekstensi (${extensions}) yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
 						false
 					);
 				},
@@ -29,7 +29,7 @@ const upload = ({ fileTypes, isArray = false }) => {
 			fileFilter: (req, file, cb) => {
 				if (mimetypes.includes(file.mimetype)) return cb(null, true);
 				return cb(
-					new Error(`Hanya file dengan ekstensi ${extensions} yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
+					new Error(`Hanya file dengan ekstensi (${extensions}) yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
 					false
 				);
 			},
@@ -48,7 +48,7 @@ const uploadMultiple = ({ fileTypes, fields }) => {
 			fileFilter: (req, file, cb) => {
 				if (mimetypes.includes(file.mimetype)) return cb(null, true);
 				return cb(
-					new Error(`Hanya file dengan ekstensi ${extensions} yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
+					new Error(`Hanya file dengan ekstensi (${extensions}) yang diizinkan!`, { cause: { code: httpStatus.BAD_REQUEST } }),
 					false
 				);
 			},

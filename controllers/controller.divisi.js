@@ -42,8 +42,9 @@ const updateDivisi = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { id: divisiId, createdAt, ...getDivisi } = await DivisiServices.getDivisi(id);
 		const validated = await validator(DivisiSchema.updateDivisi, req.body);
-		const divisi = await DivisiServices.updateDivisi(validated, id);
+		const divisi = await DivisiServices.updateDivisi({ ...getDivisi, ...validated }, divisiId);
 		res.json(responseSuccess("PATCH divisi berhasil!", divisi));
 	} catch (err) {
 		next(err);

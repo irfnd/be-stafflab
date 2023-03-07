@@ -42,8 +42,9 @@ const updateJabatan = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { id: jabatanId, createdAt, ...getJabatan } = await JabatanServices.getJabatan(id);
 		const validated = await validator(JabatanSchema.updateJabatan, req.body);
-		const jabatan = await JabatanServices.updateJabatan(validated, id);
+		const jabatan = await JabatanServices.updateJabatan({ ...getJabatan, ...validated }, jabatanId);
 		res.json(responseSuccess("PATCH jabatan berhasil!", jabatan));
 	} catch (err) {
 		next(err);

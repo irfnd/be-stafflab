@@ -42,8 +42,9 @@ const updateGolongan = async (req, res, next) => {
 	try {
 		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { id: golonganId, createdAt, ...getGolongan } = await GolonganServices.getGolongan(id);
 		const validated = await validator(GolonganSchema.updateGolongan, req.body);
-		const golongan = await GolonganServices.updateGolongan(validated, id);
+		const golongan = await GolonganServices.updateGolongan({ ...getGolongan, ...validated }, golonganId);
 		res.json(responseSuccess("PATCH golongan berhasil!", golongan));
 	} catch (err) {
 		next(err);

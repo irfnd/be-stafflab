@@ -21,8 +21,28 @@ const createMutasi = yup.object({
 	detail: yup
 		.object({
 			tipe: yup.object({
-				from: yup.number().required("Detail tipe from wajib diisi!"),
-				to: yup.number().required("Detail tipe to wajib diisi!"),
+				from: yup.number().required("Detail tipe asal wajib diisi!"),
+				to: yup.number().required("Detail tipe tujuan wajib diisi!"),
+			}),
+			status: yup.object({
+				from: yup.number().required("Detail status asal wajib diisi!"),
+				to: yup.number().required("Detail status tujuan wajib diisi!"),
+			}),
+			instansi: yup.object({
+				from: yup.number().required("Detail instansi asal wajib diisi!"),
+				to: yup.number().required("Detail instansi tujuan wajib diisi!"),
+			}),
+			divisi: yup.object({
+				from: yup.number().required("Detail divisi asal wajib diisi!"),
+				to: yup.number().required("Detail divisi tujuan wajib diisi!"),
+			}),
+			jabatan: yup.object({
+				from: yup.number().required("Detail jabatan asal wajib diisi!"),
+				to: yup.number().required("Detail jabatan tujuan wajib diisi!"),
+			}),
+			golongan: yup.object({
+				from: yup.number().required("Detail golongan asal wajib diisi!"),
+				to: yup.number().required("Detail golongan tujuan wajib diisi!"),
 			}),
 		})
 		.json(),

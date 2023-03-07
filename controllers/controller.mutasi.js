@@ -2,7 +2,7 @@ const httpStatus = require("http-status");
 const config = require("../configs");
 const { validator, validatorMulter } = require("../utils/validator");
 const { upload } = require("../middlewares/multer");
-const { MutasiServices } = require("../services");
+const { MutasiServices, FileServices, PegawaiServices, DokumenServices } = require("../services");
 const { responseSuccess } = require("../utils/response");
 const { MutasiSchema } = require("../validations");
 
@@ -41,8 +41,27 @@ const createMutasi = async (req, res, next) => {
 		if (user.claims === "PEGAWAI")
 			throw new Error("Hanya ADMIN dan MANAJER yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
 		await upload({ fileTypes: docs })(req, res);
-		const validated = await validatorMulter({ schema: MutasiSchema.createMutasi })(req);
-		res.json(responseSuccess("POST mutasi berhasil!", validated));
+		const { nipPegawai, ...validated } = await validatorMulter({ schema: MutasiSchema.createMutasi })(req);
+		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
+		const uploadedMutasi = await FileServices.uploadFile({
+			folder: pegawai.nip,
+			kategori: "mutasi",
+			namaFile: "SK Mutasi",
+			file: req.file,
+			pegawai: pegawai.nama,
+		});
+		const dokMutasi = await DokumenServices.createDokumen({
+			nama: `SK Mutasi - ${pegawai.nama}`,
+			detail: uploadedMutasi,
+			kategori: "mutasi",
+			nipPegawai: pegawai.nip,
+		});
+		const mutasi = await MutasiServices.createMutasi({
+			...validated,
+			nipPegawai: pegawai.nip,
+			dokumen: { files: [{ id: dokMutasi.id, path: dokMutasi.detail.path }] },
+		});
+		res.json(responseSuccess("POST mutasi berhasil!", mutasi));
 	} catch (err) {
 		next(err);
 	}

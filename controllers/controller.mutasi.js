@@ -117,9 +117,38 @@ const updateMutasi = async (req, res, next) => {
 	}
 };
 
+const deleteMutasi = async (req, res, next) => {
+	const { app_metadata: user } = req.user;
+	const { id } = req.params;
+	try {
+		if (user.claims !== "ADMIN") throw new Error("Hanya ADMIN yang dapat mengakses!", { cause: { code: httpStatus.FORBIDDEN } });
+		if (!id) throw new Error("Parameter ID wajib diisi!", { cause: { code: httpStatus.BAD_REQUEST } });
+		const { id: mutasiId, nipPegawai, detail, dokumen } = await MutasiServices.getMutasi(id);
+		const { pegawai } = await PegawaiServices.getPegawai(nipPegawai);
+		await PegawaiServices.updatePegawai(
+			{
+				idTipe: detail.tipe.from,
+				idStatus: detail.status.from,
+				idInstansi: detail.instansi.from,
+				idDivisi: detail.divisi.from,
+				idJabatan: detail.jabatan.from,
+				idGolongan: detail.golongan.from,
+			},
+			pegawai.nip
+		);
+		await FileServices.deleteFile({ path: dokumen.files[0].path, storage: "dokumen" });
+		await DokumenServices.deleteDokumen(dokumen.files[0].id);
+		const mutasi = await MutasiServices.deleteMutasi(mutasiId);
+		res.json(responseSuccess("DELETE mutasi berhasil!", mutasi));
+	} catch (err) {
+		next(err);
+	}
+};
+
 module.exports = {
 	getAllMutasi,
 	getMutasi,
 	createMutasi,
 	updateMutasi,
+	deleteMutasi,
 };

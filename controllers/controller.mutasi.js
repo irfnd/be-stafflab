@@ -3,16 +3,7 @@ const config = require("../configs");
 const capitalize = require("capitalize");
 const { validator, validatorMulter } = require("../utils/validator");
 const { upload } = require("../middlewares/multer");
-const {
-	MutasiServices,
-	FileServices,
-	PegawaiServices,
-	DokumenServices,
-	AkunServices,
-	ClaimsServices,
-	TipePegawaiServices,
-	JabatanServices,
-} = require("../services");
+const { MutasiServices, FileServices, PegawaiServices, DokumenServices, ClaimsServices, JabatanServices } = require("../services");
 const { responseSuccess } = require("../utils/response");
 const { MutasiSchema } = require("../validations");
 

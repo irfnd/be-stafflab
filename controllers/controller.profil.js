@@ -1,7 +1,5 @@
 const httpStatus = require("http-status");
-const { PegawaiServices, PendidikanServices, DokumenServices } = require("../services");
-const { PegawaiSchema } = require("../validations");
-const { validator } = require("../utils/validator");
+const { PegawaiServices, PendidikanServices, DokumenServices, MutasiServices } = require("../services");
 const { responseSuccess } = require("../utils/response");
 const { pegawaiFormatter } = require("../utils/formatter");
 
@@ -14,8 +12,9 @@ const getProfil = async (req, res, next) => {
 		const getPegawai = await PegawaiServices.getPegawaiByUid(uid);
 		const pegawai = pegawaiFormatter(getPegawai);
 		const pendidikan = await PendidikanServices.getAllPendidikan(pegawai.nip);
+		const mutasi = await MutasiServices.getAllMutasi({ nipPegawai: pegawai.nip, diterima: true });
 		const dokumen = await DokumenServices.getAllDokumen({ nipPegawai: pegawai.nip });
-		res.json(responseSuccess("GET profil berhasil!", { profil: pegawai, pendidikan, dokumen }));
+		res.json(responseSuccess("GET profil berhasil!", { profil: pegawai, pendidikan, mutasi, dokumen }));
 	} catch (err) {
 		next(err);
 	}

@@ -3,7 +3,16 @@ const config = require("../configs");
 const capitalize = require("capitalize");
 const { validator, validatorMulter } = require("../utils/validator");
 const { upload } = require("../middlewares/multer");
-const { MutasiServices, FileServices, PegawaiServices, DokumenServices } = require("../services");
+const {
+	MutasiServices,
+	FileServices,
+	PegawaiServices,
+	DokumenServices,
+	AkunServices,
+	ClaimsServices,
+	TipePegawaiServices,
+	JabatanServices,
+} = require("../services");
 const { responseSuccess } = require("../utils/response");
 const { MutasiSchema } = require("../validations");
 
@@ -110,6 +119,11 @@ const updateMutasi = async (req, res, next) => {
 				{ idInstansi: detail.instansi.to, idDivisi: detail.divisi.to, idJabatan: detail.jabatan.to },
 				pegawai.nip
 			);
+			const getJabatan = await JabatanServices.getJabatan(detail.jabatan.to);
+			if (getJabatan.nama.toLowerCase() === "manajer") {
+				await ClaimsServices.setClaims({ claim: "claims", value: "MANAJER", uid: pegawai.uuidUser });
+				await ClaimsServices.setClaims({ claim: "claims_admin", value: true, uid: pegawai.uuidUser });
+			}
 		}
 		res.json(responseSuccess("UPDATE mutasi berhasil!", mutasi));
 	} catch (err) {
@@ -136,6 +150,11 @@ const deleteMutasi = async (req, res, next) => {
 			},
 			pegawai.nip
 		);
+		const getJabatanFrom = await JabatanServices.getJabatan(detail.jabatan.from);
+		const getJabatanTo = await JabatanServices.getJabatan(detail.jabatan.to);
+		if (getJabatanTo.nama !== getJabatanFrom.nama && getJabatanTo.nama.toLowerCase() === "manajer") {
+			await ClaimsServices.deleteClaims({ claim: "claims", uid: pegawai.uuidUser });
+		}
 		await FileServices.deleteFile({ path: dokumen.files[0].path, storage: "dokumen" });
 		await DokumenServices.deleteDokumen(dokumen.files[0].id);
 		const mutasi = await MutasiServices.deleteMutasi(mutasiId);

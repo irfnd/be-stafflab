@@ -63,6 +63,7 @@ const createPegawai = async (req, res, next) => {
 		await DataPribadiServices.createDataPribadi({ ...validated, nipPegawai: pegawai.nip });
 		if (jabatan.nama.toLowerCase() === "manajer") {
 			await ClaimsServices.setClaims({ claim: "claims", value: jabatan.nama.toUpperCase(), uid: akun.id });
+			await ClaimsServices.setClaims({ claim: "claims_admin", value: true, uid: akun.id });
 		}
 		const uploadedPhoto = await FileServices.uploadPhoto({
 			folder: pegawai.nip,
